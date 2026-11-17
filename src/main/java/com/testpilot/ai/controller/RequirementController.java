@@ -1,6 +1,8 @@
 package com.testpilot.ai.controller;
 
+import com.testpilot.ai.dto.DeleteRequirementResponse;
 import com.testpilot.ai.dto.RequirementRequest;
+import com.testpilot.ai.dto.RequirementResponse;
 import com.testpilot.ai.entity.Requirement;
 import com.testpilot.ai.service.RequirementService;
 import org.springframework.web.bind.annotation.*;
@@ -17,22 +19,22 @@ public class RequirementController {
     }
 
     @PostMapping("/api/requirements")
-    public Requirement createRequirement(@RequestBody RequirementRequest request){
+    public RequirementResponse createRequirement(@RequestBody RequirementRequest request) {
         return requirementService.saveRequirement(request);
     }
 
     @GetMapping("/api/requirements")
-    public List<Requirement> getAllRequirement(){
+    public List<RequirementResponse> getAllRequirement(){
         return requirementService.getAllRequirements();
     }
 
     @PutMapping("/api/requirements/{id}")
-    public Requirement updateRequirement(@PathVariable Long id, @RequestBody Requirement requirement){
-        return requirementService.updateRequirement(id,requirement);
+    public RequirementResponse updateRequirement(@PathVariable Long id, @RequestBody RequirementRequest request){
+        return requirementService.updateRequirement(id,request);
     }
     
     @DeleteMapping("/api/requirements/{id}")
-    public String deleteRequirement(@PathVariable Long id){
+    public DeleteRequirementResponse deleteRequirement(@PathVariable Long id){
         return requirementService.deleteRequirement(id);
     }
 }
