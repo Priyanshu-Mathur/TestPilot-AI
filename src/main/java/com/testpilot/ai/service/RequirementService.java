@@ -1,9 +1,9 @@
 package com.testpilot.ai.service;
 
-import com.testpilot.ai.dto.DeleteRequirementResponse;
 import com.testpilot.ai.dto.RequirementRequest;
 import com.testpilot.ai.dto.RequirementResponse;
 import com.testpilot.ai.entity.Requirement;
+import com.testpilot.ai.exception.ResourceNotFoundException;
 import com.testpilot.ai.repository.RequirementRepository;
 import org.springframework.stereotype.Service;
 
@@ -36,20 +36,23 @@ public class RequirementService {
 
     public RequirementResponse updateRequirement(Long id, RequirementRequest request){
         Requirement existingRequirement = requirementRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Requirement not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Requirement not found"));
         existingRequirement.setDescription(request.getDescription());
         existingRequirement.setTitle(request.getTitle());
         Requirement updatedRequirement = requirementRepository.save(existingRequirement);
         return convertToResponse(updatedRequirement);
     }
 
-    public DeleteRequirementResponse deleteRequirement(Long id){
-        Requirement existingRequirement = requirementRepository.findById(id).orElseThrow(() -> new RuntimeException("Requirement not found"));
+    public void deleteRequirement(Long id){
+        requirementRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Requirement not found"));
         requirementRepository.deleteById(id);
-        DeleteRequirementResponse response = new DeleteRequirementResponse();
-        response.setId(existingRequirement.getId());
-        response.setMessage("Requirement deleted successfully");
-        return response;
+    }
+
+    public RequirementResponse getSingleRequirement(Long id){
+        Requirement existingRequirement = requirementRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Requirement not found"));
+        return convertToResponse(existingRequirement);
     }
 
     public Requirement convertToEntity(RequirementRequest request) {
